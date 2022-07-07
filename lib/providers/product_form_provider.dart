@@ -12,9 +12,15 @@ class ProductFormProvider extends ChangeNotifier{
   ProductFormProvider(this.product);
 
   //va;idar fomrulario 
-  bool isVlidForm(){
+  bool isValidForm(){
     return formKey.currentState?.validate()?? false;
-  }   
+  } 
+
+  updateAvailability(bool value){
+    product.available= value;
+    notifyListeners();
+
+  }
 
 
 }

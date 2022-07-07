@@ -8,6 +8,7 @@ class ProductsProvider extends ChangeNotifier{
   final baseUrl = 'flutter-varios-2d50d-default-rtdb.firebaseio.com';
   final List<Product> listProducts = [];
   bool isLoading = true;
+  bool isSaving = true;
   //para mandar los parametros con una variable global
   late Product selectedProduct;
 
@@ -54,6 +55,58 @@ class ProductsProvider extends ChangeNotifier{
 
 
   }
+  // <List<Product>>
+  //acuarlaizar o crear
+  Future saveOrCreateProduct(Product product) async{
+    isSaving=true;
+    notifyListeners();
+      print(product.id);
+    if(product.id==null){
+      //hay q crear
+
+    }else{
+      await updateProduct(product);
+
+    }
+
+
+
+    isSaving=false;
+    notifyListeners();
+
+    return product;
+
+
+  }
+  //metodo para pedir al backend
+  Future<String?> updateProduct(Product product) async{
+    
+    final url = Uri.https(baseUrl,'products${product.id}.json');
+    //debo mandar un json al backend con el metodo credo de la clase producto
+    final resp  = await http.put(url, body: product.toJson());
+    final decodeData =  resp.body;
+    print(decodeData);
+    print(product.id);
+    // todo acutlaizar el lsitado de  producto con repsuesta positiva
+    return product.id;
+    //
+
+  }
+
+  //metodo para acualizar producto en la lsita
+
+  updateListProduct(Product product){
+
+    final index = listProducts.indexWhere((element) => element.id == product.id);
+    if(index!=-1){
+      listProducts[index] = product;
+
+    }else{
+      listProducts.add(product)  ;
+    }
+
+  }
+
 
   
 

@@ -12,22 +12,44 @@ class ProductImage extends StatelessWidget {
         decoration: _decorationProductImg(),
         width: double.infinity,
         height: 450,
-        child:  ClipRRect(
-          borderRadius:  const BorderRadius.only(topLeft: Radius.circular(32), topRight:Radius.circular(32) ),
-          child:  image == null
-            ? const Image(
-            image: AssetImage('no-image.png'),
-            fit: BoxFit.cover,
-          )
-            : FadeInImage(
-            image:  NetworkImage(image!),
-            placeholder: const AssetImage('assets/jar-loading.gif'),
-            fit: BoxFit.cover,
+        child:  Stack(
+          children:[ 
+            ClipRRect(
+            borderRadius:  const BorderRadius.only(topLeft: Radius.circular(32), topRight:Radius.circular(32) ),
+            child:  image == null
+              ? const Image(
+              image: AssetImage('assets/no-image.png'),
+              fit: BoxFit.cover,
+            )
+              : FadeInImage(
+              image:  NetworkImage(image!),
+              placeholder: const AssetImage('assets/jar-loading.gif'),
+              fit: BoxFit.cover,
+            ),
+            //condicuibal si la iamgen es null
+            
+            
+            
           ),
-          //condicuibal si la iamgen es null
+           ClipRRect(
+              borderRadius:  const BorderRadius.only(topLeft: Radius.circular(32), topRight:Radius.circular(32) ),
+             child: Container(
+                      width: double.infinity,
+                      height: 80,
+                    decoration:   BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.4),
+                          Colors.transparent,
+                        ],
+                      )
+                    )),
+           ),
           
           
-          
+          ],
         ),
         
       ),
