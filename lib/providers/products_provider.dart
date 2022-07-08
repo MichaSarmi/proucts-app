@@ -9,6 +9,8 @@ class ProductsProvider extends ChangeNotifier{
   final List<Product> listProducts = [];
   bool isLoading = true;
   bool isSaving = true;
+  dynamic idTemp = null;
+
   //para mandar los parametros con una variable global
   late Product selectedProduct;
 
@@ -60,9 +62,10 @@ class ProductsProvider extends ChangeNotifier{
   Future saveOrCreateProduct(Product product) async{
     isSaving=true;
     notifyListeners();
-      print(product.id);
+      
     if(product.id==null){
-      //hay q crear
+      
+      await createProduct(product);
 
     }else{
       await updateProduct(product);
@@ -81,12 +84,10 @@ class ProductsProvider extends ChangeNotifier{
   //metodo para pedir al backend
   Future<String?> updateProduct(Product product) async{
     
-    final url = Uri.https(baseUrl,'products${product.id}.json');
+    final url = Uri.https(baseUrl,'products/${product.id}.json');
     //debo mandar un json al backend con el metodo credo de la clase producto
     final resp  = await http.put(url, body: product.toJson());
     final decodeData =  resp.body;
-    print(decodeData);
-    print(product.id);
     // todo acutlaizar el lsitado de  producto con repsuesta positiva
     return product.id;
     //
@@ -96,14 +97,33 @@ class ProductsProvider extends ChangeNotifier{
   //metodo para acualizar producto en la lsita
 
   updateListProduct(Product product){
-
+    
     final index = listProducts.indexWhere((element) => element.id == product.id);
     if(index!=-1){
       listProducts[index] = product;
 
     }else{
+      product.id = idTemp;
       listProducts.add(product)  ;
+      idTemp = null;
     }
+
+  }
+
+  //cear producto
+
+  Future<String?> createProduct(Product product) async{
+    //print('create');
+    final url = Uri.https(baseUrl,'products.json');
+    //debo mandar un json al backend con el metodo credo de la clase producto
+    final resp  = await http.post(url, body: product.toJson());
+    final decodeData =  json.decode(resp.body) ;
+    //yo paso aqui un di temporal por que se recarga la data dependiendo si el back dio una respuesta posi o mnega
+    idTemp = decodeData['name'];
+    //print(decodeData);
+    // todo acutlaizar el lsitado de  producto con repsuesta positiva
+    return product.id;
+    //
 
   }
 

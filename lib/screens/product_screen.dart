@@ -126,7 +126,7 @@ class _ProductsScreenBody extends StatelessWidget {
     );
   }
 
-  BoxShadow ShadowIcons() {
+  BoxShadow  ShadowIcons() {
     return BoxShadow(
                         blurRadius: 8,
                         blurStyle: BlurStyle.solid,

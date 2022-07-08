@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Productos app',
-      initialRoute: 'login/',
+      initialRoute: 'home/',
       routes: {
         'login/': ((context) => const LoginScreen()),
         'home/': ((context) => const HomeScreen()),
@@ -38,8 +38,8 @@ class MyApp extends StatelessWidget {
           color: Colors.indigo
 
         ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.indigo
+        floatingActionButtonTheme:  FloatingActionButtonThemeData(
+          backgroundColor: Colors.indigo.shade900
         )
       ),
       
