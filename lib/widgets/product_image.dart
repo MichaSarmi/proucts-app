@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ProductImage extends StatelessWidget {
@@ -16,16 +18,7 @@ class ProductImage extends StatelessWidget {
           children:[ 
             ClipRRect(
             borderRadius:  const BorderRadius.only(topLeft: Radius.circular(32), topRight:Radius.circular(32) ),
-            child:  image == null
-              ? const Image(
-              image: AssetImage('assets/no-image.png'),
-              fit: BoxFit.cover,
-            )
-              : FadeInImage(
-              image:  NetworkImage(image!),
-              placeholder: const AssetImage('assets/jar-loading.gif'),
-              fit: BoxFit.cover,
-            ),
+            child:  getImage(image)
             //condicuibal si la iamgen es null
             
             
@@ -65,4 +58,35 @@ class ProductImage extends StatelessWidget {
       )
     ]
   );
+  
+  //metodo
+  Widget getImage(String? picture){
+    if(picture == null){
+      return const Image(
+              image: AssetImage('assets/no-image.png'),
+              width: double.infinity,
+              fit: BoxFit.cover,
+            );
+    }
+    //si tengo http
+    else if (picture.startsWith('http')){
+      return FadeInImage(
+              image:  NetworkImage(image!),
+              width: double.infinity,
+              placeholder: const AssetImage('assets/jar-loading.gif'),
+              fit: BoxFit.cover,
+            );
+    }
+    //path fisico del telefono
+    else{
+      return Image.file(
+        File(picture),
+        width: double.infinity,
+        fit: BoxFit.cover,
+      );
+
+    }
+
+  
+  }
 }

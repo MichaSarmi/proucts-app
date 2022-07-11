@@ -1,6 +1,9 @@
 
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:productos_app/providers/product_form_provider.dart';
 import 'package:productos_app/providers/providers.dart';
@@ -68,8 +71,24 @@ class _ProductsScreenBody extends StatelessWidget {
                   Positioned(
                     top: 16,
                     right: 32,
-                    child:IconButton(onPressed: (){
-                      //Todo camara o galeria
+                    child:IconButton(onPressed: () async{
+                      FocusScope.of(context).unfocus();
+                      final picker = ImagePicker();
+                      final XFile? pickedFile = await picker.pickImage(
+                        source:  ImageSource.camera,
+                        imageQuality: 100
+                        );
+
+                        if(pickedFile == null){
+                          return;
+                        }else{
+                       
+                          productProvider.updateSelectedProductImage(pickedFile.path);
+                          //mostrar imagen
+                          
+                          
+                        }
+
         
                     }, icon: Icon(
                       Icons.camera_alt_outlined,
@@ -95,16 +114,34 @@ class _ProductsScreenBody extends StatelessWidget {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: FloatingActionButton(
-          elevation: 0,
-          child: const Icon(Icons.save_outlined),
-          onPressed: () async {
-            //todo guardar
+          elevation: 0, 
+
+          onPressed: productProvider.isSaving
+          ? null
+          :() async {
+          
               //print(productFormProvider.product.id);
              if(!productFormProvider.isValidForm()) {
               return;
 
              }else{
-              //paticion con majeos de eerores
+              //peticion con manejos de erores
+              
+                await productProvider.uploadImage().then(( image) {
+                  print('imagen subida es $image');
+                  if(image != null){
+                    productFormProvider.product.picture = image;
+                  }
+                   
+                }).catchError((err){
+                    print('teemos un 3313'+err);
+                //rnviar mensajes de errpr
+              }); 
+
+
+              print('imagen de pord');
+              print(productFormProvider.product.picture);
+
               await productProvider.saveOrCreateProduct(productFormProvider.product).then(( product) {
 
                 productProvider.updateListProduct(product);
@@ -120,6 +157,15 @@ class _ProductsScreenBody extends StatelessWidget {
             
 
           },
+          child: 
+          productProvider.isSaving
+          ?const Padding(
+            padding:  EdgeInsets.all(16.0),
+            child:  CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          )
+          :const Icon(Icons.save_outlined),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,

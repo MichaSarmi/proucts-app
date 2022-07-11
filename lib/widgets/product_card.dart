@@ -27,8 +27,6 @@ class ProductCard extends StatelessWidget {
               right: 0,
               child: _PriceTag(price: product.price),
               ),
-
-            //TODO mostrar de madera condicional
             if(!product.available)
             const Positioned(
               top: 0,

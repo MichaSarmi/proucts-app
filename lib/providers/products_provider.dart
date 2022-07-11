@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
@@ -8,8 +9,10 @@ class ProductsProvider extends ChangeNotifier{
   final baseUrl = 'flutter-varios-2d50d-default-rtdb.firebaseio.com';
   final List<Product> listProducts = [];
   bool isLoading = true;
-  bool isSaving = true;
+  bool isSaving = false;
   dynamic idTemp = null;
+  //iamgen temporal para remplezar el previ
+  File? newPicturefile;
 
   //para mandar los parametros con una variable global
   late Product selectedProduct;
@@ -88,7 +91,11 @@ class ProductsProvider extends ChangeNotifier{
     //debo mandar un json al backend con el metodo credo de la clase producto
     final resp  = await http.put(url, body: product.toJson());
     final decodeData =  resp.body;
-    // todo acutlaizar el lsitado de  producto con repsuesta positiva
+   if(resp.statusCode != 200 && resp.statusCode !=201 ){
+        print('algo salio mal');
+        return null;
+
+    }
     return product.id;
     //
 
@@ -101,7 +108,6 @@ class ProductsProvider extends ChangeNotifier{
     final index = listProducts.indexWhere((element) => element.id == product.id);
     if(index!=-1){
       listProducts[index] = product;
-
     }else{
       product.id = idTemp;
       listProducts.add(product)  ;
@@ -121,9 +127,62 @@ class ProductsProvider extends ChangeNotifier{
     //yo paso aqui un di temporal por que se recarga la data dependiendo si el back dio una respuesta posi o mnega
     idTemp = decodeData['name'];
     //print(decodeData);
+    if(resp.statusCode != 200 && resp.statusCode !=201 ){
+        print('algo salio mal');
+        return null;
+
+      }
     // todo acutlaizar el lsitado de  producto con repsuesta positiva
     return product.id;
     //
+
+  }
+
+//trnasformar en un fle el path de la camara 
+  void updateSelectedProductImage(String path){
+    //actualiza el plath
+    selectedProduct.picture = path;
+    //gererarl el archivo
+    newPicturefile =  File.fromUri(Uri(path: path));
+   
+    notifyListeners();
+  }
+
+  Future<String?> uploadImage() async{
+    if(newPicturefile == null){
+      return null;
+
+    }else{
+      isSaving = true;
+      notifyListeners();
+      //otro metodo de llamar https
+      //otro metodo llamado parse
+      final url = Uri.parse('https://api.cloudinary.com/v1_1/dgvqhcabc/image/upload?upload_preset=flutter-post-image');
+      final imageUploadRequest = http.MultipartRequest(
+        'POST',
+        url
+      );
+      final file = await http.MultipartFile.fromPath('file', newPicturefile!.path);
+      imageUploadRequest.files.add(file);
+      //la repsuesta del back
+      final streamResponse = await imageUploadRequest.send();
+      final resp = await http.Response.fromStream(streamResponse);
+      
+      if(resp.statusCode != 200 && resp.statusCode !=201 ){
+        print('algo salio mal');
+        print(resp.body);
+        return null;
+
+      }
+
+
+      newPicturefile = null; //limpio la propiedad newPicture file
+
+      final decodeData = json.decode(resp.body);
+      return decodeData['secure_url'];
+      
+
+    }
 
   }
 
