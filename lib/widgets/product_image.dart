@@ -60,33 +60,27 @@ class ProductImage extends StatelessWidget {
   );
   
   //metodo
-  Widget getImage(String? picture){
-    if(picture == null){
+   Widget getImage( String? picture ) {
+
+    if ( picture == null ) {
       return const Image(
-              image: AssetImage('assets/no-image.png'),
-              width: double.infinity,
-              fit: BoxFit.cover,
-            );
+          image: AssetImage('assets/no-image.png'),
+          fit: BoxFit.cover,
+        );
     }
-    //si tengo http
-    else if (picture.startsWith('http')){
+    //aqui puede dar un error al pregunta elsif y ver q picture es null OJO
+    if ( picture.startsWith('http') ) {
       return FadeInImage(
-              image:  NetworkImage(image!),
-              width: double.infinity,
-              placeholder: const AssetImage('assets/jar-loading.gif'),
-              fit: BoxFit.cover,
-            );
-    }
-    //path fisico del telefono
-    else{
-      return Image.file(
-        File(picture),
-        width: double.infinity,
-        fit: BoxFit.cover,
-      );
-
+          image: NetworkImage( image! ),
+          placeholder:const  AssetImage('assets/jar-loading.gif'),
+          fit: BoxFit.cover,
+        );
     }
 
-  
+
+    return Image.file(
+      File( picture ),
+      fit: BoxFit.cover,
+    );
   }
 }

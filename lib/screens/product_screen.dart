@@ -1,6 +1,8 @@
 
 
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -119,7 +121,7 @@ class _ProductsScreenBody extends StatelessWidget {
           onPressed: productProvider.isSaving
           ? null
           :() async {
-          
+              FocusScope.of(context).unfocus();
               //print(productFormProvider.product.id);
              if(!productFormProvider.isValidForm()) {
               return;
@@ -145,7 +147,9 @@ class _ProductsScreenBody extends StatelessWidget {
               await productProvider.saveOrCreateProduct(productFormProvider.product).then(( product) {
 
                 productProvider.updateListProduct(product);
-                Navigator.of(context).pop();
+                Timer(const Duration(seconds: 2), () => Navigator.of(context).pop());
+                
+                
 
 
               }).catchError((err){
