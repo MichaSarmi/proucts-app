@@ -68,7 +68,7 @@ class ProductImage extends StatelessWidget {
           fit: BoxFit.cover,
         );
     }
-    //aqui puede dar un error al pregunta elsif y ver q picture es null OJO
+    // TODO aqui puede dar un error al pregunta elsif y ver q picture es null OJO
     if ( picture.startsWith('http') ) {
       return FadeInImage(
           image: NetworkImage( image! ),

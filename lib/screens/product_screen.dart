@@ -147,7 +147,7 @@ class _ProductsScreenBody extends StatelessWidget {
               await productProvider.saveOrCreateProduct(productFormProvider.product).then(( product) {
 
                 productProvider.updateListProduct(product);
-                Timer(const Duration(seconds: 2), () => Navigator.of(context).pop());
+                Timer(const Duration(milliseconds: 3), () => Navigator.of(context).pop());
                 
                 
 
