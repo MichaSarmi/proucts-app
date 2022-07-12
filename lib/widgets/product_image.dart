@@ -18,7 +18,7 @@ class ProductImage extends StatelessWidget {
           children:[ 
             ClipRRect(
             borderRadius:  const BorderRadius.only(topLeft: Radius.circular(32), topRight:Radius.circular(32) ),
-            child:  getImage(image)
+            child:  getImage(context, image)
             //condicuibal si la iamgen es null
             
             
@@ -60,21 +60,30 @@ class ProductImage extends StatelessWidget {
   );
   
   //metodo
-   Widget getImage( String? picture ) {
+   Widget getImage( BuildContext contex,String? picture ) {
 
     if ( picture == null ) {
       return const Image(
+          width: double.infinity,
           image: AssetImage('assets/no-image.png'),
           fit: BoxFit.cover,
         );
     }
     // TODO aqui puede dar un error al pregunta elsif y ver q picture es null OJO
     if ( picture.startsWith('http') ) {
-      return FadeInImage(
-          image: NetworkImage( image! ),
-          placeholder:const  AssetImage('assets/jar-loading.gif'),
-          fit: BoxFit.cover,
-        );
+      return Container(
+        alignment: Alignment.center,
+        color: Colors.white,
+        child: FadeInImage(
+            width: double.infinity,
+
+            image: NetworkImage( picture ),
+            fit: BoxFit.cover,
+            placeholder:const  AssetImage('assets/jar-loading.gif'),
+            placeholderFit: BoxFit.fitHeight,
+            alignment: Alignment.center,
+          ),
+      );
     }
 
 
