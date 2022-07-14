@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 
 import '../ui/input_decorations.dart';
 
-class LoginScreen extends StatelessWidget {
+class RegisterScreen extends StatelessWidget {
   
    
-  const LoginScreen({Key? key}) : super(key: key);
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +24,13 @@ class LoginScreen extends StatelessWidget {
                   childWidget: Column(
                     children: [
                       const SizedBox(height: 8,),
-                      Text('Login', style: Theme.of(context).textTheme.headline4,),
+                      Text('Register', style: Theme.of(context).textTheme.headline4,),
                       const SizedBox(height: 24,),
                       //Formulario
                       ChangeNotifierProvider(
                         create: (_)=> LoginFormProvider(),
                         child: const _LoginForm(),
-                        
                         ),
-                        
-                      
-                      
-
                     ],
                   )
                   
@@ -43,14 +38,15 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 54,),
                   TextButton(
-                    onPressed: ()=> Navigator.pushReplacementNamed(context, 'register/'),
+                    onPressed: ()=> Navigator.pushReplacementNamed(context, 'login/'),
                     style: ButtonStyle(
                       overlayColor: MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
                       shape: MaterialStateProperty.all(const StadiumBorder())
                     ),
-                    child:  const Text('Crear nueva cuenta', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.purple),),
+                    child:  const Text('Ya tienes una cuenta?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.purple),),
                     
                   ),
+
                   const SizedBox(height: 54,),
 
               
@@ -131,19 +127,20 @@ class _LoginForm extends StatelessWidget {
               onPressed: loginFormProvider.isLoading?null: () async{
               //quitar el teclado
                FocusScope.of(context).unfocus();
+               //lsitener false por que nmo se debe escuchar en un metodo si no en el build
+               final authService = Provider.of<AuthService>(context,listen: false);
               //si se valida el formulario desde el ley de form
-              final authService = Provider.of<AuthService>(context,listen: false);
               if(!loginFormProvider.isValidForm()){
                 //loginFormProvider.isLoading = !loginFormProvider.isLoading;
                 return ;
               }else{
                 loginFormProvider.isLoading = true;
 
-                await authService.loginUser(loginFormProvider.email, loginFormProvider.password).then(
+                await authService.createUser(loginFormProvider.email, loginFormProvider.password).then(
                   (data){
+
                     print(data);
-                    //el bck no regresa un code
-                    if(!data.containsKey('idToken')){
+                    if(data['error']['code']!=200){
                       print('es un error');
                       //todo mostrar error en pantalla
                     }else{
@@ -159,6 +156,8 @@ class _LoginForm extends StatelessWidget {
 
                 
                 loginFormProvider.isLoading = false;
+               
+
               }
           
 
@@ -176,7 +175,7 @@ class _LoginForm extends StatelessWidget {
                 ? const _LoadingLogin()
                 : const Text(
 
-                    'Login',
+                    'Register',
                     textAlign: TextAlign.center,
                     style:  TextStyle(color: Colors.white, fontSize: 18),
                   ) 

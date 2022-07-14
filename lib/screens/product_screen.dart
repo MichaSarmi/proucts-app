@@ -22,7 +22,7 @@ class ProductScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    final productProvider = Provider.of<ProductsProvider>(context);
+    final productProvider = Provider.of<ProductsService>(context);
     //para tener acceso dentro de los elementos tanto del formulario camara
     //necesitamos poner un change y pasarle la referecia del provder
     return ChangeNotifierProvider(create: ((_) => ProductFormProvider(productProvider.selectedProduct) ), 
@@ -36,7 +36,7 @@ class _ProductsScreenBody extends StatelessWidget {
     required this.productProvider,
   }) : super(key: key);
 
-  final ProductsProvider productProvider;
+  final ProductsService productProvider;
 
   @override
   Widget build(BuildContext context) {

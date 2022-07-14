@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
-import 'package:productos_app/providers/products_provider.dart';
+import 'package:productos_app/providers/products_service.dart';
 import 'package:productos_app/screens/screens.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //COMO EL sericio-provider esta inicializado en el amin solo lo leo
-    final productProvider =  Provider.of<ProductsProvider>(context);
+    final productProvider =  Provider.of<ProductsService>(context);
     if (productProvider.isLoading) return const LoadingScreen();
     return  Scaffold(
       appBar: AppBar(
