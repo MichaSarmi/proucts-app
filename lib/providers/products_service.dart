@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:productos_app/models/models.dart';
 import 'package:http/http.dart'as http;
 
@@ -16,18 +17,24 @@ class ProductsService extends ChangeNotifier{
 
   //para mandar los parametros con una variable global
   late Product selectedProduct;
+  //para lleer el token
+    final storage = const FlutterSecureStorage();
 
 
   ProductsService(){
     loadProduct();
   }
 
-  //TODO <List<Product>>
   Future <List<Product>> loadProduct() async{
     isLoading =true;
     notifyListeners();
+    //firebase pide el topken el el url
 
-    final url = Uri.https(baseUrl,'products.json');
+    //otros backens puden en el headEr OJO
+
+    final url = Uri.https(baseUrl,'products.json',{
+      'auth': await storage.read(key: 'token') ?? ''
+    });
     final resp  = await http.get(url);
 
     //convertir la repsuesta en un map
@@ -87,7 +94,9 @@ class ProductsService extends ChangeNotifier{
   //metodo para pedir al backend
   Future<String?> updateProduct(Product product) async{
     
-    final url = Uri.https(baseUrl,'products/${product.id}.json');
+    final url = Uri.https(baseUrl,'products/${product.id}.json',{
+      'auth': await storage.read(key: 'token') ?? ''
+    });
     //debo mandar un json al backend con el metodo credo de la clase producto
     final resp  = await http.put(url, body: product.toJson());
     final decodeData =  resp.body;
@@ -120,7 +129,9 @@ class ProductsService extends ChangeNotifier{
 
   Future<String?> createProduct(Product product) async{
     //print('create');
-    final url = Uri.https(baseUrl,'products.json');
+    final url = Uri.https(baseUrl,'products.json',{
+      'auth': await storage.read(key: 'token') ?? ''
+    });
     //debo mandar un json al backend con el metodo credo de la clase producto
     final resp  = await http.post(url, body: product.toJson());
     final decodeData =  json.decode(resp.body) ;

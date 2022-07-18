@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
+import 'package:productos_app/providers/auth_service.dart';
 import 'package:productos_app/providers/products_service.dart';
 import 'package:productos_app/screens/screens.dart';
 import 'package:provider/provider.dart';
@@ -14,10 +15,20 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     //COMO EL sericio-provider esta inicializado en el amin solo lo leo
     final productProvider =  Provider.of<ProductsService>(context);
+    final authService =  Provider.of<AuthService>(context,listen: false);
     if (productProvider.isLoading) return const LoadingScreen();
     return  Scaffold(
       appBar: AppBar(
         title: const Text('Productos'),
+        actions: [IconButton(
+          icon: const Icon(Icons.login_outlined),
+          //deberia ser un async pero no por que esta accion es rapida OJO CON ESTO
+          onPressed: (){
+            authService.logOut();
+            Navigator.pushReplacementNamed(context, 'login/');
+          },
+          
+        )],
       ),
       //es perezoso
       body: ListView.builder(

@@ -142,15 +142,20 @@ class _LoginForm extends StatelessWidget {
                     print(data);
                     if(data['error']['code']!=200){
                       print('es un error');
+                      NotificationProivder.showSnackbar('Usuario no valido');
                       //todo mostrar error en pantalla
                     }else{
+                      authService.createTokenStorage(data['idToken']);
+                      
                       Navigator.pushReplacementNamed(context, 'home/');
+                      
                     }
 
                   }
                   
                   ).catchError((err){
                    print('es un error catch');
+                    NotificationProivder.showSnackbar('No podemos procesar el login intentalo mas tarde');
                     print(err);
                   });
 

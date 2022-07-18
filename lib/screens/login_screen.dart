@@ -72,119 +72,119 @@ class _LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     //proivder para apitar al ley
       final loginFormProvider =  Provider.of<LoginFormProvider>(context);
-    return Container(
-      child: Form(
-        key: loginFormProvider.formKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        //key no hace ver si psaron las validaciones
-        child: Column(
-          children: [
-            TextFormField(
-              enabled: !loginFormProvider.isLoading,
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              decoration:  InputDecorations.dauthInputDecoration(
-                hintText: 'mail@mail.com',
-                labelText: 'Email',
-                prefixIcon: Icons.alternate_email_rounded),
-                validator: (value) {
-                  value = value==null?'':value.trim();
-                  
-                  String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                  RegExp regExp  =  RegExp(pattern);
-                  return regExp.hasMatch(value)?
-                  null
-                  :'Format invalid';
-                },
-                onChanged: ((value) {
-                  loginFormProvider.email = value;
-                }),
-              
-
-            ),
-            const SizedBox(height: 24,),
-            TextFormField(
-              enabled: !loginFormProvider.isLoading,
-              autocorrect: false,
-              obscureText: true,
-              keyboardType: TextInputType.emailAddress,
-              decoration:  InputDecorations.dauthInputDecoration(
-                hintText: '***',
-                labelText: 'Password',
-                prefixIcon: Icons.lock_outline),
-                validator: (value) {
-                  if(value!=null && value.length>=6){
-                    return null;
-                  }else{
-                    return 'Password 6 characters';
-                  }
-                  
-                },
-                 onChanged: ((value) {
-                  loginFormProvider.password = value;
-                }),
-
-            ),
-            const SizedBox(height: 24,),
-            //para que el boton se desacrtive hay q mandar null
-            MaterialButton(
-              onPressed: loginFormProvider.isLoading?null: () async{
-              //quitar el teclado
-               FocusScope.of(context).unfocus();
-              //si se valida el formulario desde el ley de form
-              final authService = Provider.of<AuthService>(context,listen: false);
-              if(!loginFormProvider.isValidForm()){
-                //loginFormProvider.isLoading = !loginFormProvider.isLoading;
-                return ;
-              }else{
-                loginFormProvider.isLoading = true;
-
-                await authService.loginUser(loginFormProvider.email, loginFormProvider.password).then(
-                  (data){
-                    print(data);
-                    //el bck no regresa un code
-                    if(!data.containsKey('idToken')){
-                      print('es un error');
-                      //todo mostrar error en pantalla
-                    }else{
-                      Navigator.pushReplacementNamed(context, 'home/');
-                    }
-
-                  }
-                  
-                  ).catchError((err){
-                   print('es un error catch');
-                    print(err);
-                  });
-
+    return Form(
+      key: loginFormProvider.formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      //key no hace ver si psaron las validaciones
+      child: Column(
+        children: [
+          TextFormField(
+            enabled: !loginFormProvider.isLoading,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            decoration:  InputDecorations.dauthInputDecoration(
+              hintText: 'mail@mail.com',
+              labelText: 'Email',
+              prefixIcon: Icons.alternate_email_rounded),
+              validator: (value) {
+                value = value==null?'':value.trim();
                 
-                loginFormProvider.isLoading = false;
-              }
-          
-
-              //Todo login for,
-            },
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              disabledColor: Colors.grey,
-              color: Colors.purple,
-              elevation: 0,
-              child:  Container(
-                constraints: const BoxConstraints( maxWidth: 200,minWidth: 200),
-                //padding:  const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
-                child:  
-                loginFormProvider.isLoading==true
-                ? const _LoadingLogin()
-                : const Text(
-
-                    'Login',
-                    textAlign: TextAlign.center,
-                    style:  TextStyle(color: Colors.white, fontSize: 18),
-                  ) 
-              ),
-            )
+                String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                RegExp regExp  =  RegExp(pattern);
+                return regExp.hasMatch(value)?
+                null
+                :'Format invalid';
+              },
+              onChanged: ((value) {
+                loginFormProvider.email = value;
+              }),
             
-          ],
-        ),
+
+          ),
+          const SizedBox(height: 24,),
+          TextFormField(
+            enabled: !loginFormProvider.isLoading,
+            autocorrect: false,
+            obscureText: true,
+            keyboardType: TextInputType.emailAddress,
+            decoration:  InputDecorations.dauthInputDecoration(
+              hintText: '***',
+              labelText: 'Password',
+              prefixIcon: Icons.lock_outline),
+              validator: (value) {
+                if(value!=null && value.length>=6){
+                  return null;
+                }else{
+                  return 'Password 6 characters';
+                }
+                
+              },
+               onChanged: ((value) {
+                loginFormProvider.password = value;
+              }),
+
+          ),
+          const SizedBox(height: 24,),
+          //para que el boton se desacrtive hay q mandar null
+          MaterialButton(
+            onPressed: loginFormProvider.isLoading?null: () async{
+            //quitar el teclado
+             FocusScope.of(context).unfocus();
+            //si se valida el formulario desde el ley de form
+            final authService = Provider.of<AuthService>(context,listen: false);
+            if(!loginFormProvider.isValidForm()){
+              //loginFormProvider.isLoading = !loginFormProvider.isLoading;
+              return ;
+            }else{
+              loginFormProvider.isLoading = true;
+
+              await authService.loginUser(loginFormProvider.email, loginFormProvider.password).then(
+                (data){
+                  print(data);
+                  //el bck no regresa un code
+                  if(!data.containsKey('idToken')){
+                    NotificationProivder.showSnackbar('Correo o contraseña invalida');
+                    //todo mostrar error en pantalla
+                  }else{
+                    authService.createTokenStorage(data['idToken']);
+                    Navigator.pushReplacementNamed(context, 'home/');
+                  }
+
+                }
+                
+                ).catchError((err){
+                 print('es un error catch');
+                  NotificationProivder.showSnackbar('No podemos procesar el login intentalo mas tarde');
+                 
+                });
+
+              
+              loginFormProvider.isLoading = false;
+            }
+        
+
+            //Todo login for,
+          },
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            disabledColor: Colors.grey,
+            color: Colors.purple,
+            elevation: 0,
+            child:  Container(
+              constraints: const BoxConstraints( maxWidth: 200,minWidth: 200),
+              //padding:  const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+              child:  
+              loginFormProvider.isLoading==true
+              ? const _LoadingLogin()
+              : const Text(
+
+                  'Login',
+                  textAlign: TextAlign.center,
+                  style:  TextStyle(color: Colors.white, fontSize: 18),
+                ) 
+            ),
+          )
+          
+        ],
       ),
     );
   }

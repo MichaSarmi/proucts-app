@@ -26,13 +26,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Productos app',
-      initialRoute: 'login/',
+      initialRoute: 'checking/',
       routes: {
+         'checking/': ((context) => const CheckAuthScreen()),
+
         'login/': ((context) => const LoginScreen()),
         'home/': ((context) => const HomeScreen()),
         'product/': ((context) => const ProductScreen()),
-        'register/': ((context) => const RegisterScreen())
+        'register/': ((context) => const RegisterScreen()),
+       
       },
+      scaffoldMessengerKey: NotificationProivder.messegerKey,//tener acceso a ese servicio en todo lado con la key statica
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.grey[300],
         appBarTheme: const AppBarTheme(
