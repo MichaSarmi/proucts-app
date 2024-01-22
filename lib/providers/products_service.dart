@@ -39,9 +39,9 @@ class ProductsService extends ChangeNotifier{
 
     //convertir la repsuesta en un map
     final Map<String,dynamic> productsMap = json.decode(resp.body) ;
-
+    resp;
     //transforma el mapa un ;istado de productos por esoe l future retorna <List<Product>>
-
+/*
     productsMap.forEach((key, value) {
       //se usa form map por q retoranmos un map
       final tempProd = Product.fromMap(value);
@@ -58,7 +58,7 @@ class ProductsService extends ChangeNotifier{
       tempProd.id = key;
       listProducts.add(tempProd);
       
-    });
+    });*/
     isLoading =false;
     notifyListeners();
 

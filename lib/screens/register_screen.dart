@@ -140,14 +140,14 @@ class _LoginForm extends StatelessWidget {
                   (data){
 
                     print(data);
-                    if(data['error']['code']!=200){
-                      print('es un error');
-                      NotificationProivder.showSnackbar('Usuario no valido');
-                      //todo mostrar error en pantalla
-                    }else{
+                    data;
+                    if(data['idToken']!=null){
                       authService.createTokenStorage(data['idToken']);
-                      
+                      print("todo bien");
                       Navigator.pushReplacementNamed(context, 'home/');
+                    }else{
+                        print('es un error');
+                      NotificationProivder.showSnackbar('Usuario no valido');
                       
                     }
 
